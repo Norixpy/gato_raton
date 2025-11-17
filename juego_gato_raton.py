@@ -13,11 +13,14 @@ movimientos = {
     '4': (0, -1),  # izquierda
     '6': (0, 1)    # derecha
 }
-
-# Mostrar el tablero
+#mostrar tablero
 def mostrar_tablero():
     for fila in tablero:
-        print(' '.join(fila))
+        fila_formateada = []
+        for celda in fila:
+            contenido = celda.strip('[]') or ' '
+            fila_formateada.append(f"[{contenido:^3}]")
+        print(" ".join(fila_formateada))
     print()
 
 # Movimiento válido
@@ -175,3 +178,5 @@ for turno in range(1, 16):
         break
 else:
     print("El raton escapo del gato despues de 16 turnos")
+
+
