@@ -1,5 +1,5 @@
 -cree un juego simple y estrategico donde el gato es el jugador (manual) y debe atrapar al raton (jugador minimax) 
-con las estragias, como quesos que hacen perder un turno al raton y trampas que acorralan al raton en la matriz
+con las estragias, como quesos que hacen perder un turno al raton y trampas que el gato elije donde colocar para acorralar al raton en la matriz
 el raton utiliza movimientos manhattan que se aleja del gato y calcula la mejor posicion posible para huir
 -el gato tiene 16 turnos para atrapar al raton de lo contrario el raton logra escapar.
 
