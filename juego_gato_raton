@@ -42,7 +42,7 @@ def jugador_mueve_gato(pasos=1):
     tecla = input('---> movimiento: ').lower()
     if tecla in movimientos:
         return mover(gato, movimientos[tecla], pasos, evitar_obstaculo=False)
-    print('Movimiento inválido')
+    print('Movimiento invalido')
     return gato
 
 # Distancia Manhattan
@@ -72,7 +72,7 @@ def raton_esta_rodeado():
 
 # Colocar trampa manual
 def colocar_trampa_manual():
-    print("Puedes colocar una trampa cerca del ratón")
+    print("Puedes colocar una trampa cerca del raton")
     print("Elige dirección (8=arriba, 2=abajo, 4=izquierda, 6=derecha): ")
     tecla = input('---> dirección: ').lower()
     if tecla in movimientos:
@@ -83,11 +83,11 @@ def colocar_trampa_manual():
             trampas.append(pos)
             print("Trampa colocada en", pos)
         else:
-            print("No se puede colocar trampa ahí.")
+            print("No se puede colocar trampa ahi.")
     else:
-        print("Dirección inválida.")
+        print("Direccion invalida.")
 
-# Generar 6 quesos estáticos
+# Generar 5 quesos estáticos
 def generar_quesos_estaticos(cantidad):
     quesos = []
     while len(quesos) < cantidad:
@@ -105,7 +105,7 @@ tablero[gato[0]][gato[1]] = 'G'
 tablero[raton[0]][raton[1]] = 'R'
 
 # Generar quesos y trampas
-quesos = generar_quesos_estaticos(6)
+quesos = generar_quesos_estaticos(5)
 trampas = []
 
 # Estado del juego
@@ -120,8 +120,8 @@ for turno in range(1, 16):
 
     # Verificar si el ratón está rodeado
     if raton_esta_rodeado():
-        print("El ratón está rodeado y no puede moverse")
-        print("El gato atrapó al ratón")
+        print("El raton esta rodeado y no puede moverse")
+        print("El gato atrapo al raton")
         break
 
     # Limpiar posición anterior del gato
@@ -134,12 +134,12 @@ for turno in range(1, 16):
 
     # Verificar si el gato atrapó al ratón
     if gato == raton:
-        print("El gato atrapó al ratón")
+        print("El gato atrapo al raton")
         break
 
     # Opción de colocar trampa cada 3 turnos
     if turno % 3 == 0:
-        print("Turno estratégico: ¿Quieres colocar una trampa o seguir jugando?")
+        print("Turno estrategico: ¿Quieres colocar una trampa o seguir jugando?")
         print("Escribe 't' para colocar trampa o 's' para saltar:")
         eleccion = input('---> ').lower()
         if eleccion == 't':
@@ -147,14 +147,14 @@ for turno in range(1, 16):
         elif eleccion == 's':
             print("Saltaste la trampa. Sigues jugando normalmente.")
         else:
-            print("Opción inválida. No se colocó trampa.")
+            print("Opcion invalida. No se coloco trampa.")
 
     # Limpiar posición anterior del ratón
     tablero[raton[0]][raton[1]] = '[ ]'
 
     # Movimiento del ratón
     if raton_pierde_turno:
-        print("El ratón está aturdido por el queso y pierde este turno.")
+        print("El raton esta aturdido por el queso y pierde este turno.")
         raton_pierde_turno = False
     else:
         nueva_raton = minimax_raton(raton, gato)
@@ -162,7 +162,7 @@ for turno in range(1, 16):
 
         # Verificar si el ratón comió un queso
         if raton in quesos:
-            print("El ratón comio un queso. ¡Pierde su próximo turno!")
+            print("El raton comio un queso. ¡Pierde su proximo turno!")
             quesos.remove(raton)
             raton_pierde_turno = True
 
@@ -171,7 +171,7 @@ for turno in range(1, 16):
 
     # Verificar si el gato atrapó al ratón después del movimiento
     if gato == raton:
-        print("El gato atrapó al ratón")
+        print("El gato atrapo al ratón")
         break
 else:
-    print("El ratón escapó del gato después de 16 turnos")
+    print("El raton escapo del gato despues de 16 turnos")
