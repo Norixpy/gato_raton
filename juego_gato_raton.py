@@ -24,27 +24,23 @@ def mostrar_tablero():
     print()
 
 # Movimiento válido
-def mover(pos, mov, pasos=1, evitar_obstaculo=True, es_raton=False):
-    nueva = pos[:]
-    for _ in range(pasos):
-        temp = [nueva[0] + mov[0], nueva[1] + mov[1]]
-        if 0 <= temp[0] < N and 0 <= temp[1] < N:
-            if evitar_obstaculo:
-                if tablero[temp[0]][temp[1]] == 'T':
-                    break
-                if tablero[temp[0]][temp[1]] == 'Q' and not es_raton:
-                    break
-            nueva = temp
-        else:
-            break
-    return nueva
+def mover(pos, mov, evitar_obstaculo=True, es_raton=False):
+    temp = [pos[0] + mov[0], pos[1] + mov[1]]
+    if 0 <= temp[0] < N and 0 <= temp[1] < N:
+        if evitar_obstaculo:
+            if tablero[temp[0]][temp[1]] == 'T':
+                return pos
+            if tablero[temp[0]][temp[1]] == 'Q' and not es_raton:
+                return pos
+        return temp
+    return pos
 
 # Movimiento manual del gato
-def jugador_mueve_gato(pasos=1):
+def jugador_mueve_gato():
     print("Tu turno (8=arriba, 2=abajo, 4=izquierda, 6=derecha): ")
     tecla = input('---> movimiento: ').lower()
     if tecla in movimientos:
-        return mover(gato, movimientos[tecla], pasos, evitar_obstaculo=False)
+        return mover(gato, movimientos[tecla],evitar_obstaculo=False)
     print('Movimiento invalido')
     return gato
 
@@ -62,7 +58,7 @@ def evaluar_estado(raton, gato):
 def movimientos_validos_raton(raton):
     posibles = []
     for mov in movimientos.values():
-        nuevo = mover(raton, mov, pasos=1, evitar_obstaculo=True, es_raton=True)
+        nuevo = mover(raton, mov, evitar_obstaculo=True, es_raton=True)
         if nuevo != raton:
             posibles.append(nuevo)
     return posibles
@@ -71,7 +67,7 @@ def movimientos_validos_raton(raton):
 def movimientos_validos_gato(gato):
     posibles = []
     for mov in movimientos.values():
-        nuevo = mover(gato, mov, pasos=1, evitar_obstaculo=False)
+        nuevo = mover(gato, mov, evitar_obstaculo=False)
         if nuevo != gato:
             posibles.append(nuevo)
     return posibles
@@ -109,7 +105,7 @@ def minimax_raton(raton, gato):
 # Verificar si el ratón está rodeado
 def raton_esta_rodeado():
     for mov in movimientos.values():
-        nueva = mover(raton, mov, pasos=1, evitar_obstaculo=True, es_raton=True)
+        nueva = mover(raton, mov, evitar_obstaculo=True, es_raton=True)
         if nueva != raton:
             return False
     return True
@@ -159,7 +155,9 @@ raton_pierde_turno = False
 # Mostrar tablero inicial
 mostrar_tablero()
 
-# Bucle de juego
+# Bucle de juego encapsulado
+def jugar():
+  global gato, raton, raton_pierde_turno, tablero, quesos
 for turno in range(1, 16):
     print(f"\n Turno {turno}")
 
@@ -173,7 +171,7 @@ for turno in range(1, 16):
     tablero[gato[0]][gato[1]] = '[ ]'
 
     # Mover el gato
-    gato = jugador_mueve_gato(1)
+    gato = jugador_mueve_gato()
     tablero[gato[0]][gato[1]] = 'G'
     mostrar_tablero()
 
@@ -183,7 +181,7 @@ for turno in range(1, 16):
         break
 
     # Opción de colocar trampa cada 3 turnos
-    if turno % 3 == 0:
+    if turno % 5 == 0:
         print("Turno estrategico: ¿Quieres colocar una trampa o seguir jugando?")
         print("Escribe 't' para colocar trampa o 's' para saltar:")
         eleccion = input('---> ').lower()
@@ -219,6 +217,6 @@ for turno in range(1, 16):
         print("El gato atrapo al ratón")
         break
 else:
-    print("El raton escapo del gato despues de 16 turnos")
+    print("El raton escapo del gato despues de 15 turnos")
 
-
+    jugar()
