@@ -48,22 +48,63 @@ def jugador_mueve_gato(pasos=1):
     print('Movimiento invalido')
     return gato
 
-# Distancia Manhattan
+# Distancia Manhattan 
 def distancia(pos1, pos2):
     return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
-# Movimiento del ratón
-def minimax_raton(raton, gato):
-    mejor_movimiento = raton
-    mejor_valor = -1
+# funcion de evaluacion minimax
+def evaluar_estado(raton, gato):
+    if raton == gato:
+        return -999
+    return distancia(raton, gato)
+
+# movimientos del raton
+def movimientos_validos_raton(raton):
+    posibles = []
     for mov in movimientos.values():
-        nueva_pos = mover(raton, mov, pasos=1, evitar_obstaculo=True, es_raton=True)
-        if nueva_pos != raton:
-            valor = distancia(nueva_pos, gato)
+        nuevo = mover(raton, mov, pasos=1, evitar_obstaculo=True, es_raton=True)
+        if nuevo != raton:
+            posibles.append(nuevo)
+    return posibles
+
+# movimientos del gato
+def movimientos_validos_gato(gato):
+    posibles = []
+    for mov in movimientos.values():
+        nuevo = mover(gato, mov, pasos=1, evitar_obstaculo=False)
+        if nuevo != gato:
+            posibles.append(nuevo)
+    return posibles
+
+# minimax real full 
+def minimax(raton, gato, profundidad, maximizando):
+    if profundidad == 0 or raton == gato:
+        return evaluar_estado(raton, gato), raton
+
+    if maximizando:  # turno del ratón
+        mejor_valor = -9999
+        mejor_mov = raton
+        for mov in movimientos_validos_raton(raton):
+            valor, _ = minimax(mov, gato, profundidad - 1, False)
             if valor > mejor_valor:
                 mejor_valor = valor
-                mejor_movimiento = nueva_pos
-    return mejor_movimiento
+                mejor_mov = mov
+        return mejor_valor, mejor_mov
+
+    else:  # turno del gato (MIN)
+        mejor_valor = 9999
+        mejor_mov = gato
+        for mov in movimientos_validos_gato(gato):
+            valor, _ = minimax(raton, mov, profundidad - 1, True)
+            if valor < mejor_valor:
+                mejor_valor = valor
+                mejor_mov = mov
+        return mejor_valor, mejor_mov
+
+# decision final de raton
+def minimax_raton(raton, gato):
+    _, mov = minimax(raton, gato, profundidad=2, maximizando=True)
+    return mov
 
 # Verificar si el ratón está rodeado
 def raton_esta_rodeado():
@@ -72,6 +113,7 @@ def raton_esta_rodeado():
         if nueva != raton:
             return False
     return True
+
 
 # Colocar trampa manual
 def colocar_trampa_manual():
