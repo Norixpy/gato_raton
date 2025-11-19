@@ -6,13 +6,6 @@ N = 5
 # Crear la matriz
 tablero = [['[ ]' for j in range(N)] for i in range(N)]
 
-# Definir movimientos
-movimientos = {
-    '8': (-1, 0),  # arriba
-    '2': (1, 0),   # abajo
-    '4': (0, -1),  # izquierda
-    '6': (0, 1)    # derecha
-}
 #mostrar tablero
 def mostrar_tablero():
     for fila in tablero:
@@ -23,6 +16,26 @@ def mostrar_tablero():
         print(" ".join(fila_formateada))
     print()
 
+# Posiciones iniciales
+gato = [0, 0]
+def esta_cerca(pos1, pos2):
+    return abs(pos1[0] - pos2[0]) <= 1 and abs(pos1[1] - pos2[1]) <= 1
+
+# Generar posición aleatoria para el raton, evitando cercania
+while True:
+    raton = [random.randint(0, N - 1), random.randint(0, N - 1)]
+    if not esta_cerca(gato, raton):
+        break
+tablero[gato[0]][gato[1]] = 'G'
+tablero[raton[0]][raton[1]] = 'R'    
+
+# Definir movimientos
+movimientos = {
+    '8': (-1, 0),  # arriba
+    '2': (1, 0),   # abajo
+    '4': (0, -1),  # izquierda
+    '6': (0, 1)    # derecha
+}
 # Movimiento válido
 def mover(pos, mov, evitar_obstaculo=True, es_raton=False):
     temp = [pos[0] + mov[0], pos[1] + mov[1]]
@@ -50,11 +63,11 @@ def distancia(pos1, pos2):
 
 # funcion de evaluacion minimax
 def evaluar_estado(raton, gato):
-    if raton == gato:
+    if raton == gato: #esta es la hoja del minimax
         return -999
     return distancia(raton, gato)
 
-# movimientos del raton
+# movimientos del raton MAX distancia
 def movimientos_validos_raton(raton):
     posibles = []
     for mov in movimientos.values():
@@ -63,7 +76,7 @@ def movimientos_validos_raton(raton):
             posibles.append(nuevo)
     return posibles
 
-# movimientos del gato
+# movimientos del gato MIN distancia
 def movimientos_validos_gato(gato):
     posibles = []
     for mov in movimientos.values():
@@ -75,9 +88,9 @@ def movimientos_validos_gato(gato):
 # minimax real full 
 def minimax(raton, gato, profundidad, maximizando):
     if profundidad == 0 or raton == gato:
-        return evaluar_estado(raton, gato), raton
+        return evaluar_estado(raton, gato), raton #fin del juego 
 
-    if maximizando:  # turno del ratón
+    if maximizando:  # turno del ratón MAX
         mejor_valor = -9999
         mejor_mov = raton
         for mov in movimientos_validos_raton(raton):
@@ -87,7 +100,7 @@ def minimax(raton, gato, profundidad, maximizando):
                 mejor_mov = mov
         return mejor_valor, mejor_mov
 
-    else:  # turno del gato (MIN)
+    else:  # turno del gato MIN
         mejor_valor = 9999
         mejor_mov = gato
         for mov in movimientos_validos_gato(gato):
@@ -139,12 +152,6 @@ def generar_quesos_estaticos(cantidad):
             tablero[x][y] = 'Q'
     return quesos
 
-# Posiciones iniciales
-gato = [0, 0]
-raton = [2, 2]
-tablero[gato[0]][gato[1]] = 'G'
-tablero[raton[0]][raton[1]] = 'R'
-
 # Generar quesos y trampas
 quesos = generar_quesos_estaticos(5)
 trampas = []
@@ -180,7 +187,7 @@ for turno in range(1, 16):
         print("El gato atrapo al raton")
         break
 
-    # Opción de colocar trampa cada 3 turnos
+    # Opción de colocar trampa cada 5 turnos
     if turno % 5 == 0:
         print("Turno estrategico: ¿Quieres colocar una trampa o seguir jugando?")
         print("Escribe 't' para colocar trampa o 's' para saltar:")
